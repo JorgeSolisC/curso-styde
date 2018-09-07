@@ -14,7 +14,7 @@ class AddProfessionIdToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedInteger('profession_id');
+            $table->unsignedInteger('profession_id')->nullable();
             //el cmapo profession_id hara referencia al campo id de la tabla professions
             $table->foreign('profession_id')->references('id')->on('professions');
         });
