@@ -26,21 +26,23 @@ class UserSeeder extends Seeder
             'is_admin'=> true,
         ]);
 
-        User::create([
-            // ..
-            'name'=>'User2',
-            'email'=>'c@example.com',
-            'password' => bcrypt('laravel'),
-            'profession_id' => $professionId,
+        //crea aleatorios
+        factory(User::class)->create([
+            'profession_id'=>$professionId
         ]);
 
-        User::create([
+        factory(User::class)->create();
+
+        factory(User::class)->create([
             // ..
-            'name'=>'User3',
-            'email'=>'cu@example.com',
+
             'password' => bcrypt('laravel'),
-            'profession_id' => null,
+            'profession_id' => $professionId,
+            'is_admin'=> true,
         ]);
+
+        //crea 48 registros
+        factory(User::class, 48)->create();
 
         //método DB::select podemos construir una consulta SELECT de SQL de forma manual:
         //$professions = DB::select('SELECT id FROM professions WHERE title = ?', ['Desarrollador back-end']);
