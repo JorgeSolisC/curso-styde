@@ -43,6 +43,11 @@ class UsersModuleTest extends TestCase
             ->assertSee('Duilio Palacios');
     }
 
+    /**@test */
+    function it_displays_a_404_error_if_the_user_is_not_found(){
+
+    }
+
     /** @test */
     function it_loads_the_new_users_page()
     {

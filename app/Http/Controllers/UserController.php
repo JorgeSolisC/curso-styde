@@ -37,9 +37,15 @@ class UserController extends Controller
         return view('users.index',compact('title','users'));
     }
 
-    public function show($id)
+    //public function show($id)
+    public function show(User $user)
     {
-        $user = User::find($id);
+        // findOrFail intentará encontrar el registro correspondiente a
+        // la llave primaria pasada como argumento, y si este no es
+        // encontrado devolverá una excepción de tipo ModelNotFoundException
+       // $user = User::findOrFail($id);
+
+
         return view('users.show', compact('user'));
     }
 
