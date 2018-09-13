@@ -43,15 +43,33 @@ class UserController extends Controller
         // findOrFail intentará encontrar el registro correspondiente a
         // la llave primaria pasada como argumento, y si este no es
         // encontrado devolverá una excepción de tipo ModelNotFoundException
-       // $user = User::findOrFail($id);
+        // $user = User::findOrFail($id);
 
 
         return view('users.show', compact('user'));
     }
 
     public function create(){
-        return 'Crear nuevo usuario';
+        return view('users.create');
     }
 
+    public function store()
+    {
+        $data = request()->validate([
+            'name'=>'required'
+        ],[
+            'name.required' => 'El campo nombre es obligatorio'
+        ]);
+        //$data = request()->all();
+        //dd($data);
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password'])
+        ]);
 
+        //return redirect('usuarios'); // Redirigimos a la URL "/usuarios"
+
+        return redirect()->route('users.index'); // Redirigimos a la ruta con el nombre "users.index
+    }
 }

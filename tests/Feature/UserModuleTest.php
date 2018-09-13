@@ -36,16 +36,18 @@ class UsersModuleTest extends TestCase
     function it_displays_the_users_details()
     {
         $user = factory(User::class)->create([
-            'name' => 'Duilio Palacios'
+            'name' => 'CURCO'
         ]);
         $this->get('/usuarios/'.$user->id) // usuarios/5
             ->assertStatus(200)
-            ->assertSee('Duilio Palacios');
+            ->assertSee('CURCO');
     }
 
     /**@test */
     function it_displays_a_404_error_if_the_user_is_not_found(){
-
+        $this->get('/usuarios/990')
+        ->assertStatus(404)
+        ->assertSee('Pagina no encontrada');
     }
 
     /** @test */
@@ -54,5 +56,38 @@ class UsersModuleTest extends TestCase
         $this->get('/usuarios/nuevo')
             ->assertStatus(200)
             ->assertSee('Crear nuevo usuario');
+    }
+    /** @test */
+    function it_creates_a_new_user()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->post('/usuarios/', [
+            'name' => 'CURCO',
+            'email' => 'cur@example.com',
+            'password' => 'Laravel'
+        ])->assertRedirect('usuarios');
+
+        $this->assertCredentials([
+            'name' => 'CURCO',
+            'email' => 'cur@example.com',
+            'password' => 'Laravel',
+        ]);
+    }
+
+    function the_name_is_required(){
+        $this->from('usuarios/nuevo')
+            ->post('/usuarios/',[
+                'name'=>'',
+                'email'=>'cur@example.com',
+                'password'=>'Laravel'
+            ])
+            ->assertRedirect('usuarios/nuevo')
+            ->assertSessionHasErrors(['name'=>'El campo nombre es obligatorio']);
+
+        $this->assertEquals(0, User::count());
+        // $this->assertDatabaseMissing('users',[
+        //     'email'=>'cur@example.com',
+        // ]);
     }
 }
