@@ -55,7 +55,7 @@ class UsersModuleTest extends TestCase
     {
         $this->get('/usuarios/nuevo')
             ->assertStatus(200)
-            ->assertSee('Crear nuevo usuario');
+            ->assertSee('Crear usuario');
     }
     /** @test */
     function it_creates_a_new_user()
@@ -90,4 +90,94 @@ class UsersModuleTest extends TestCase
         //     'email'=>'cur@example.com',
         // ]);
     }
+    /** @test */
+    function the_email_is_required()
+    {
+        $this->from('usuarios/nuevo')
+            ->post('/usuarios/', [
+                'name' => 'CURCO',
+                'email' => '',
+                'password' => 'Laravel'
+            ])
+            ->assertRedirect('usuarios/nuevo')
+            ->assertSessionHasErrors(['email']);
+        $this->assertEquals(0, User::count());
+    }
+    /** @test */
+    function the_email_must_be_valid()
+    {
+        $this->from('usuarios/nuevo')
+            ->post('/usuarios/', [
+                'name' => 'CURCO',
+                'email' => 'correo-no-valido',
+                'password' => 'Laravel'
+            ])
+            ->assertRedirect('usuarios/nuevo')
+            ->assertSessionHasErrors(['email']);
+        $this->assertEquals(0, User::count());
+    }
+    /** @test */
+    function the_email_must_be_unique()
+    {
+        factory(User::class)->create([
+            'email' => 'cur@example.com'
+        ]);
+        $this->from('usuarios/nuevo')
+            ->post('/usuarios/', [
+                'name' => 'CURCO',
+                'email' => 'cur@example.com',
+                'password' => 'Laravel'
+            ])
+            ->assertRedirect('usuarios/nuevo')
+            ->assertSessionHasErrors(['email']);
+        $this->assertEquals(1, User::count());
+    }
+    /** @test */
+    function the_password_is_required()
+    {
+        $this->from('usuarios/nuevo')
+            ->post('/usuarios/', [
+                'name' => 'CURCO',
+                'email' => 'cur@example.com',
+                'password' => ''
+            ])
+            ->assertRedirect('usuarios/nuevo')
+            ->assertSessionHasErrors(['password']);
+        $this->assertEquals(0, User::count());
+    }
+
+    /** @test */
+    function it_loads_the_edit_user_page()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        $this->get("/usuarios/{$user->id}/editar") // usuarios/5/editar
+            ->assertStatus(200)
+            ->assertViewIs('users.edit')
+            ->assertSee('Editar usuario')
+            ->assertViewHas('user', function ($viewUser) use ($user) {
+                return $viewUser->id === $user->id;
+            });
+    }
+    /** @test */
+    function it_updates_a_user(){
+        $user = factory(User::class)->create();
+
+        $this->withoutExceptionHandling();
+
+        $this->put("/usuarios/{$user->id}",[
+                'name' => 'CURCO',
+                'email' => 'cur@example.com',
+                'password' => 'Laravel'
+            ])->assertRedirect("/usuarios/{$user->id}");
+
+        $this->assertCredentials([
+            'name' => 'CURCO',
+            'email' => 'cur@example.com',
+            'password' => 'Laravel'
+        ]);
+    }
 }
+?>

@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 class WelcomeUserController extends Controller
 {
-    public function index($name,$nickname = null){
+    /** @test */
+    function index($name,$nickname = null){
         $name = ucfirst($name);
 
         if($nickname){

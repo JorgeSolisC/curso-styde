@@ -56,20 +56,29 @@ class UserController extends Controller
     public function store()
     {
         $data = request()->validate([
-            'name'=>'required'
-        ],[
+            'name' => 'required',
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => 'required',
+        ], [
             'name.required' => 'El campo nombre es obligatorio'
         ]);
-        //$data = request()->all();
-        //dd($data);
         User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password'])
         ]);
+        return redirect()->route('users.index');
+    }
+    public function edit(User $user)
+    {
+        return view('users.edit', ['user' => $user]);
+    }
 
-        //return redirect('usuarios'); // Redirigimos a la URL "/usuarios"
+    public function update(User $user){
+        $data = request()->all();
+        $data['password']=bcrypt($data['password']);
+        $user->update($data);
 
-        return redirect()->route('users.index'); // Redirigimos a la ruta con el nombre "users.index
+        return redirect()->route('users.show',['user'=>$user]);
     }
 }
