@@ -61,7 +61,9 @@ class UserController extends Controller
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => 'required',
         ], [
-            'name.required' => 'El campo nombre es obligatorio'
+            'name.required' => 'El campo nombre es obligatorio',
+            'email.required' => 'El campo email es obligatorio',
+            'password.required' => 'El campo password es obligatorio',
         ]);
         User::create([
             'name' => $data['name'],
@@ -92,5 +94,10 @@ class UserController extends Controller
         $user->update($data);
 
         return redirect()->route('users.show',['user'=>$user]);
+    }
+
+    function destroy(User $user){
+        $user->delete();
+        return redirect()->route('users.index');
     }
 }

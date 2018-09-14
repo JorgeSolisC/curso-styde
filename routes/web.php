@@ -40,6 +40,8 @@ Route::put('/usuarios/{user}', 'UserController@update');
 
 Route::get('saludo/{name}/{nickname?}', 'WelcomeUserController@index');
 
+Route::delete('/usuarios/{user}', 'UserController@destroy')->name('users.destroy');
+
 /*
 Route::get('/usuarios', 'UserController@index') {
     return 'Usuarios';
