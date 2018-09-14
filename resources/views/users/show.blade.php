@@ -3,15 +3,18 @@
 @section('title', "Usuario {$user->id}")
 
 @section('content')
-    <h1>Usuario #{{ $user->id }}</h1>
 
-    <p>Nombre del usuario: {{ $user->name }}</p>
-    <p>Correo electrónico: {{ $user->email }}</p>
+<div class="card" >
+        <h4 class="card-header">Usuario #{{ $user->id }}</h4>
+        <ul class="list-group list-group-flush">
+        <li class="list-group-item">Nombre del usuario: {{ $user->name }}</li>
+        <li class="list-group-item">Correo electrónico: {{ $user->email }}</li>
+        <li class="list-group-item"><a href="{{ route('users.index')}}">Regresar al listado de usuarios</a></li>
+        </ul>
+</div>
 
     {{-- <a href="{{ url('/usuarios')}}">Regresar</a> --}}
     {{-- <a href="{{ url()->previous() }}">Regresar</a> --}}
     {{-- <a href="{{ action('UserController@index') }}">Regresar</a> --}}
-    <a href="{{ route('users.index')}}">Regresar al listado de usuarios</a>
-
 @endsection
 
